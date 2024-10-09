@@ -10,71 +10,13 @@ prepareCommands:
 
 # Membaca State
 
-Oke, stop dengan teorinya, mari kita coba lirik kodenya.
+Pada langkah ini kita akan mencoba untuk membaca `state` yang telah kita buat sebelumnya di dalam `Component` yang kita sudah buat.
 
-Bagaimana caranya kita mulai menggunakan `zustand` dalam aplikasi React yang kita miliki?
+Cara untuk menggunakan `state` yang telah kita buat sebelumnya adalah dengan menggunakan `hooks` yang telah disediakan oleh `zustand`.
 
-:::warn
-Pada contoh di samping package `zustand` sudah dipasangkan terlebih dahulu, sehingga untuk langkah instalasi `zustand` bisa dilewati saja
-:::
+Ingat bahwa hasil akhir dari `store` yang kita buat sebelumnya adalah sebuah `hooks` yang dapat digunakan langsung di dalam `Component` kita.
 
-Tentunya akan dimulai dengan install package `zustand` terlebih dahulu dengan menggunakan perintah:
-
-```sh
-#npm
-npm install zustand 
-
-#pnpm
-pnpm install zustand
-
-#yarn
-yarn add zustand
-
-#bun
-bun add zustand
-```
-
-Selanjutnya kita akan membuat sebuah store yang akan menyimpan state aplikasi kita
-
-```jsx
-// File: src/stores/index.js
-
-// Di sini kita akan membuat store (tempat penyimpanan data) yang akan digunakan di aplikasi kita.
-import { create } from "zustand";
-
-// Membuat store dengan konvensi penulisan use-namaDomain-Store (e.g.: useCounterStore)
-const useBearStore = create(
-	// Di sini kita akan menggunakan fungsi create yang dimiliki oleh zustand
-	// Fungsi create ini akan:
-	// - menerima satu parameter berupa function dan:
-	//    - menerima satu parameter bernama "set"
-	//    - mengembalikan object yang berisi:
-	//      - state (data yang berisi informasi yang akan disimpan)
-	//      - actions (fungsi yang berisi logic yang akan memanipulasi state)
-	(set) => ({
-		// Kumpulan state
-		jumlahBeruang: 100,
-
-		// Kumpulan actions
-
-		// Fungsi untuk menambah populasi beruang
-		tambahPopulasiBeruang: () =>
-			// Di sini kita akan menggunakan set untuk mengubah state yang ada
-			// set akan menerima function yang:
-			// - menerima satu parameter bernama "state"
-			// - mengembalikan object yang berisi state baru
-			set((state) => ({ jumlahBeruang: state.jumlahBeruang + 1 })),
-
-		// Fungsi untuk mereset populasi beruang
-		resetPopulasiBeruang: () => set(() => ({ jumlahBeruang: 0 })),
-	}),
-);
-
-// Export store yang telah dibuat
-export { useBearStore };
-```
-
-Selanjutnya kita tinggal menggunakan store yang telah kita buat di dalam komponen kita
+Berikut adalah kode yang harus dimodifikasi di dalam `src/App.jsx`:
 
 ```jsx
 // File: src/App.jsx
@@ -116,3 +58,11 @@ const App = () => {
 
 export default App;
 ```
+
+Dan selesai ...
+
+Kita sudah berhasil untuk membaca `state` dari `zustand` di dalam aplikasi kita.
+
+**Cukup mudah bukan !?**
+
+Selanjutnya kita akan mencoba untuk mengubah `state` yang telah kita buat sebelumnya, dengan cara memanggil actions yang sudah dibuat yah.

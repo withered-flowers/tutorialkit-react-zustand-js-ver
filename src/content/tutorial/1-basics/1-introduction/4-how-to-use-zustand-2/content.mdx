@@ -2,7 +2,7 @@
 type: lesson
 title: Declare Store
 template: init-react
-focus: /src/App.jsx
+focus: /src/stores/index.js
 mainCommand: ["npm run dev", "Running dev server"]
 prepareCommands:
   - ['npm install', 'Installing dependencies']
@@ -58,8 +58,8 @@ Langkah di atas dapat diselesaikan dengan:
 		export { useBearStore };
 		```
 
-Setelah membuat store, kita dapat menggunakan store yang telah kita buat di dalam komponen kita untuk:
-- Membaca state
-- Memanggil action untuk mengubah state
+Setelah membuat `store`, kita dapat menggunakan `store` yang telah kita buat di dalam `Component` kita untuk:
+- Membaca `state`
+- Memanggil `action` untuk mengubah state
 
-Pada langkah selanjutnya kita akan mencoba untuk membaca state yang sudah dibuat untuk digunakan di dalam komponen kita.
+Pada langkah selanjutnya kita akan mencoba untuk membaca `state` yang sudah dibuat untuk digunakan di dalam `Component` kita.

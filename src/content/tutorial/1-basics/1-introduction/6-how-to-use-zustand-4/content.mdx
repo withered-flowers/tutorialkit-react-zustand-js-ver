@@ -10,71 +10,13 @@ prepareCommands:
 
 # Panggil Actions
 
-Oke, stop dengan teorinya, mari kita coba lirik kodenya.
+Pada langkah ini kita akan mencoba untuk memanggil `actions` yang telah kita buat sebelumnya untuk mengubah `state` di dalam `Component` yang kita sudah buat.
 
-Bagaimana caranya kita mulai menggunakan `zustand` dalam aplikasi React yang kita miliki?
+Cara untuk menggunakan `actions` adalah:
+- Menggunakan `hooks` yang telah disediakan oleh `zustand` untuk mendapatkan `actions` yang kita butuhkan.
+- Memanggil `actions` yang kita butuhkan, dengan **PERLAKUAN YANG SAMA SEPERTI MEMANGGIL `state`**.
 
-:::warn
-Pada contoh di samping package `zustand` sudah dipasangkan terlebih dahulu, sehingga untuk langkah instalasi `zustand` bisa dilewati saja
-:::
-
-Tentunya akan dimulai dengan install package `zustand` terlebih dahulu dengan menggunakan perintah:
-
-```sh
-#npm
-npm install zustand 
-
-#pnpm
-pnpm install zustand
-
-#yarn
-yarn add zustand
-
-#bun
-bun add zustand
-```
-
-Selanjutnya kita akan membuat sebuah store yang akan menyimpan state aplikasi kita
-
-```jsx
-// File: src/stores/index.js
-
-// Di sini kita akan membuat store (tempat penyimpanan data) yang akan digunakan di aplikasi kita.
-import { create } from "zustand";
-
-// Membuat store dengan konvensi penulisan use-namaDomain-Store (e.g.: useCounterStore)
-const useBearStore = create(
-	// Di sini kita akan menggunakan fungsi create yang dimiliki oleh zustand
-	// Fungsi create ini akan:
-	// - menerima satu parameter berupa function dan:
-	//    - menerima satu parameter bernama "set"
-	//    - mengembalikan object yang berisi:
-	//      - state (data yang berisi informasi yang akan disimpan)
-	//      - actions (fungsi yang berisi logic yang akan memanipulasi state)
-	(set) => ({
-		// Kumpulan state
-		jumlahBeruang: 100,
-
-		// Kumpulan actions
-
-		// Fungsi untuk menambah populasi beruang
-		tambahPopulasiBeruang: () =>
-			// Di sini kita akan menggunakan set untuk mengubah state yang ada
-			// set akan menerima function yang:
-			// - menerima satu parameter bernama "state"
-			// - mengembalikan object yang berisi state baru
-			set((state) => ({ jumlahBeruang: state.jumlahBeruang + 1 })),
-
-		// Fungsi untuk mereset populasi beruang
-		resetPopulasiBeruang: () => set(() => ({ jumlahBeruang: 0 })),
-	}),
-);
-
-// Export store yang telah dibuat
-export { useBearStore };
-```
-
-Selanjutnya kita tinggal menggunakan store yang telah kita buat di dalam komponen kita
+Mari kita coba untuk memodifikasi kode di samping menjadi di bawah ini:
 
 ```jsx
 // File: src/App.jsx
@@ -85,7 +27,15 @@ import { useBearStore } from "./stores";
 
 const App = () => {
 	// Menggunakan store yang telah dibuat sebelumnya
-	const { jumlahBeruang } = useBearStore();
+	// Cara memanggil "state" dan "actions" dari store TERNYATA SAMA !
+	const { jumlahBeruang, tambahPopulasiBeruang, resetPopulasiBeruang } =
+		useBearStore();
+
+	// Di sini kita akan membuat handler untuk button tambah beruang ketika ditekan
+	const handleTambahBeruangOnClickHandler = () => {
+		// Memanggil fungsi tambahPopulasiBeruang dari useBearStore
+		tambahPopulasiBeruang();
+	};
 
 	return (
 		<>
@@ -96,15 +46,20 @@ const App = () => {
 					<span>{jumlahBeruang}</span>
 				</p>
 				<div className="flex">
+					{/* Pada button ini kita akan memanggil fungsi handlernya */}
 					<button
 						className="bg-blue-200 hover:bg-blue-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
 						type="button"
+						onClick={handleTambahBeruangOnClickHandler}
 					>
 						Tambah Beruang
 					</button>
+
+					{/* Pada button ini kita akan langsung memanggil action-nya */}
 					<button
 						className="bg-red-200 hover:bg-red-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
 						type="button"
+						onClick={() => resetPopulasiBeruang()}
 					>
 						Reset Beruang
 					</button>
@@ -116,3 +71,23 @@ const App = () => {
 
 export default App;
 ```
+
+Dan selesai (lagi) …
+
+Kita sudah berhasil untuk memanggil actions dari zustand di dalam aplikasi kita.
+
+Cukup mudah (lagi) bukan !?
+
+:::info
+Cara memanggil `actions` dari `zustand` ternyata **SAMA** dengan cara memanggil `state` dari `zustand`.
+
+Hanya saja perbedaannya adalah:
+- `state` diperlakukan seperti variabel (tidak memerlukan tanda kurung / di-*invoke*), 
+- `actions` diperlakukan seperti fungsi (memerlukan tanda kurung / di-*invoke*).
+:::
+
+Mudah sekali bukan untuk menggunakan `zustand` ini?
+
+Nah tapi ini semua baru permulaan nih...
+
+Masih banyak lagi yang bisa kita *kulik* dari zustand nih sebenarnya, jadi mari kita coba untuk mempelajari `zustand` lebih dalam berdasarkan beberapa kasus yang ada selanjutnya.

@@ -4,7 +4,15 @@ import { useBearStore } from "./stores";
 
 const App = () => {
 	// Menggunakan store yang telah dibuat sebelumnya
-	const { jumlahBeruang } = useBearStore();
+	// Cara memanggil "state" dan "actions" dari store TERNYATA SAMA !
+	const { jumlahBeruang, tambahPopulasiBeruang, resetPopulasiBeruang } =
+		useBearStore();
+
+	// Di sini kita akan membuat handler untuk button tambah beruang ketika ditekan
+	const handleTambahBeruangOnClickHandler = () => {
+		// Memanggil fungsi tambahPopulasiBeruang dari useBearStore
+		tambahPopulasiBeruang();
+	};
 
 	return (
 		<>
@@ -15,15 +23,20 @@ const App = () => {
 					<span>{jumlahBeruang}</span>
 				</p>
 				<div className="flex">
+					{/* Pada button ini kita akan memanggil fungsi handlernya */}
 					<button
 						className="bg-blue-200 hover:bg-blue-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
 						type="button"
+						onClick={handleTambahBeruangOnClickHandler}
 					>
 						Tambah Beruang
 					</button>
+
+					{/* Pada button ini kita akan langsung memanggil action-nya */}
 					<button
 						className="bg-red-200 hover:bg-red-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
 						type="button"
+						onClick={() => resetPopulasiBeruang()}
 					>
 						Reset Beruang
 					</button>
