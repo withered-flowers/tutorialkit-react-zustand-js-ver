@@ -1,0 +1,34 @@
+---
+type: lesson
+title: Hello Zustand
+editor: false
+previews: false
+template: init
+mainCommand: ["node index.js", "terminal"]
+---
+
+# Hello `zustand`
+
+Jadi sebenarnya Apa itu `zustand` ?
+
+![zustand](src/assets/bear.jpg)
+
+Dikutip dari halaman github [zustand](https://github.com/pmndrs/zustand):
+
+> `zustand` adalah solusi state management yang kecil, cepat, dan bisa di-scale yang menggunakan [prinsip flux](https://medium.com/@goatslacker/principles-of-flux-ea872bc20772), berbasis **hooks**, tidak terlalu **ber-boilerplate** ataupun **teropini** !
+
+Sederhananya, `zustand` adalah sebuah state management yang sederhana dan berbasis hook untuk React.
+
+Mengapa butuh state management padahal kita sudah memiliki `useState` yang dikombinasikan dengan `useEffect` ?
+
+Karena `useState` dan `useEffect` hanya bisa digunakan di dalam komponen React, dan tidak bisa digunakan di luar komponen React. 
+
+Jadi, ketika kita membutuhkan state yang bisa diakses di luar komponen React (untuk keperluan testing, ataupun yang lainnya), kita membutuhkan state management.
+
+:::tip
+TL;DR
+
+Ketika aplikasi kita sudah cukup kompleks, kita membutuhkan state management untuk memudahkan kita dalam mengelola state.
+
+Zustand adalah salah satu solusi state management yang bisa kita gunakan.
+:::

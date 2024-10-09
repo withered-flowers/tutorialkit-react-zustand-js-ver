@@ -1,0 +1,45 @@
+---
+type: lesson
+title: Install Package
+template: init-react
+focus: /src/App.jsx
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
+---
+
+# Instalasi Package
+
+Oke, stop dengan teorinya, mari kita coba lirik kodenya.
+
+:::info
+Kode di samping merupakan kode sederhana untuk melihat **Populasi beruang** yang ada di suatu tempat.
+
+Selain itu kita juga bisa menambahkan jumlah beruang dengan menekan tombol **Tambah Beruang** dan mereset jumlah beruang dengan menekan tombol **Reset Beruang**
+:::
+
+Nah, bagaimana caranya kita mulai menggunakan `zustand` dalam aplikasi React yang kita miliki?
+
+Tentunya akan dimulai dengan mencari repo github dari package `zustand` terlebih dahulu yang bisa ditemukan di [sini](https://github.com/pmndrs/zustand).
+
+Kemudian kita akan meng-install package `zustand` terlebih dahulu akan menggunakan perintah:
+
+```sh
+#npm
+npm install zustand 
+
+#pnpm
+pnpm install zustand
+
+#yarn
+yarn add zustand
+
+#bun
+bun add zustand
+```
+
+:::warn
+Pada contoh di samping package `zustand` sudah dipasangkan terlebih dahulu, sehingga untuk langkah instalasi `zustand` bisa dilewati saja
+:::
+
+Selanjutnya kita akan membuat sebuah `store` yang akan menyimpan state aplikasi kita.

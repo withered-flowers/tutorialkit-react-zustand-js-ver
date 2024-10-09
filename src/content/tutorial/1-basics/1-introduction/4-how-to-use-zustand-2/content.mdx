@@ -1,0 +1,65 @@
+---
+type: lesson
+title: Declare Store
+template: init-react
+focus: /src/App.jsx
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
+---
+
+# Buat Store
+
+Secara singkatnya, store adalah tempat pusat penyimpanan dan pengelolaan data (state). 
+
+Untuk membuat store di `zustand`, kita akan:
+- Membuat file untuk menampung store kita (e.g.: `src/stores/index.js`)
+- Membuat store dengan menggunakan fungsi `create` yang dimiliki oleh `zustand`
+- Membuat state (data) dan actions (fungsi untuk mengubah data) yang akan digunakan di aplikasi kita.
+
+Langkah di atas dapat diselesaikan dengan:
+- Membuat file baru di `src/stores/index.js`
+- Menuliskan kode berikut:
+		```jsx
+		// File: src/stores/index.js
+
+		// Di sini kita akan membuat store (tempat penyimpanan data) yang akan digunakan di aplikasi kita.
+		import { create } from "zustand";
+
+		// Membuat store dengan konvensi penulisan use-namaDomain-Store (e.g.: useCounterStore)
+		const useBearStore = create(
+			// Di sini kita akan menggunakan fungsi create yang dimiliki oleh zustand
+			// Fungsi create ini akan:
+			// - menerima satu parameter berupa function dan:
+			//    - menerima satu parameter bernama "set"
+			//    - mengembalikan object yang berisi:
+			//      - state (data yang berisi informasi yang akan disimpan)
+			//      - actions (fungsi yang berisi logic yang akan memanipulasi state)
+			(set) => ({
+				// Kumpulan state
+				jumlahBeruang: 100,
+
+				// Kumpulan actions
+
+				// Fungsi untuk menambah populasi beruang
+				tambahPopulasiBeruang: () =>
+					// Di sini kita akan menggunakan set untuk mengubah state yang ada
+					// set akan menerima function yang:
+					// - menerima satu parameter bernama "state"
+					// - mengembalikan object yang berisi state baru
+					set((state) => ({ jumlahBeruang: state.jumlahBeruang + 1 })),
+
+				// Fungsi untuk mereset populasi beruang
+				resetPopulasiBeruang: () => set(() => ({ jumlahBeruang: 0 })),
+			}),
+		);
+
+		// Export store yang telah dibuat
+		export { useBearStore };
+		```
+
+Setelah membuat store, kita dapat menggunakan store yang telah kita buat di dalam komponen kita untuk:
+- Membaca state
+- Memanggil action untuk mengubah state
+
+Pada langkah selanjutnya kita akan mencoba untuk membaca state yang sudah dibuat untuk digunakan di dalam komponen kita.

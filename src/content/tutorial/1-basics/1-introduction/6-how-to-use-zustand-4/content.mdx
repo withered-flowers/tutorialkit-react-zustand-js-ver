@@ -1,0 +1,118 @@
+---
+type: lesson
+title: Call Actions
+template: init-react
+focus: /src/App.jsx
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
+---
+
+# Panggil Actions
+
+Oke, stop dengan teorinya, mari kita coba lirik kodenya.
+
+Bagaimana caranya kita mulai menggunakan `zustand` dalam aplikasi React yang kita miliki?
+
+:::warn
+Pada contoh di samping package `zustand` sudah dipasangkan terlebih dahulu, sehingga untuk langkah instalasi `zustand` bisa dilewati saja
+:::
+
+Tentunya akan dimulai dengan install package `zustand` terlebih dahulu dengan menggunakan perintah:
+
+```sh
+#npm
+npm install zustand 
+
+#pnpm
+pnpm install zustand
+
+#yarn
+yarn add zustand
+
+#bun
+bun add zustand
+```
+
+Selanjutnya kita akan membuat sebuah store yang akan menyimpan state aplikasi kita
+
+```jsx
+// File: src/stores/index.js
+
+// Di sini kita akan membuat store (tempat penyimpanan data) yang akan digunakan di aplikasi kita.
+import { create } from "zustand";
+
+// Membuat store dengan konvensi penulisan use-namaDomain-Store (e.g.: useCounterStore)
+const useBearStore = create(
+	// Di sini kita akan menggunakan fungsi create yang dimiliki oleh zustand
+	// Fungsi create ini akan:
+	// - menerima satu parameter berupa function dan:
+	//    - menerima satu parameter bernama "set"
+	//    - mengembalikan object yang berisi:
+	//      - state (data yang berisi informasi yang akan disimpan)
+	//      - actions (fungsi yang berisi logic yang akan memanipulasi state)
+	(set) => ({
+		// Kumpulan state
+		jumlahBeruang: 100,
+
+		// Kumpulan actions
+
+		// Fungsi untuk menambah populasi beruang
+		tambahPopulasiBeruang: () =>
+			// Di sini kita akan menggunakan set untuk mengubah state yang ada
+			// set akan menerima function yang:
+			// - menerima satu parameter bernama "state"
+			// - mengembalikan object yang berisi state baru
+			set((state) => ({ jumlahBeruang: state.jumlahBeruang + 1 })),
+
+		// Fungsi untuk mereset populasi beruang
+		resetPopulasiBeruang: () => set(() => ({ jumlahBeruang: 0 })),
+	}),
+);
+
+// Export store yang telah dibuat
+export { useBearStore };
+```
+
+Selanjutnya kita tinggal menggunakan store yang telah kita buat di dalam komponen kita
+
+```jsx
+// File: src/App.jsx
+
+// Gunakan store yang telah dibuat sebelumnya (useBearStore) di dalam komponen App
+// ada kata kata "use" di depan, menandakan bahwa kita akan menggunakan store tersebut sebagai hooks
+import { useBearStore } from "./stores";
+
+const App = () => {
+	// Menggunakan store yang telah dibuat sebelumnya
+	const { jumlahBeruang } = useBearStore();
+
+	return (
+		<>
+			<div className="bg-gray-200 p-4 m-4 flex flex-col w-full md:w-1/2 lg:w-1/4 gap-4">
+				<p className="flex justify-center gap-1">
+					<span>Jumlah Populasi Beruang:</span>
+					{/* Mengganti 0 dengan state jumlahBeruang dari useBearStore */}
+					<span>{jumlahBeruang}</span>
+				</p>
+				<div className="flex">
+					<button
+						className="bg-blue-200 hover:bg-blue-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
+						type="button"
+					>
+						Tambah Beruang
+					</button>
+					<button
+						className="bg-red-200 hover:bg-red-400 hover:text-white mx-auto py-2 px-4 rounded transition-colors duration-300"
+						type="button"
+					>
+						Reset Beruang
+					</button>
+				</div>
+			</div>
+		</>
+	);
+};
+
+export default App;
+```
