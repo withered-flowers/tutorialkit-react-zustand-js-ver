@@ -1,4 +1,294 @@
 ---
 type: lesson
 title: The Solution
+template: case-1
+focus: /src/stores/index.js
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
 ---
+
+# Solution 1 - Multiple State
+
+Lalu bagaimanakah caranya kita akan menyelesaikan masalah ini?
+
+Langkah-langkah penyelesaiannya adalah sebagai berikut:
+1. Install package `zustand` dengan perintah `npm install zustand`.
+    :::info
+    Pada tutorial ini, package `zustand` sudah di-install, sehingga tidak perlu dilakukan lagi
+    :::
+
+1. Kemudian kita akan mencoba untuk membuat `store` yang berisi `state` dan `actions` yang akan digunakan di dalam component kita. adapun kodenya adalah sebagai berikut:
+    ```js
+    // File: src/stores/index.js
+    import { create } from "zustand";
+
+    const useCounterStore = create((set) => ({
+      // Di sini kita akan mendefinisikan state yang akan digunakan
+      angkaPertama: 20,
+      angkaKedua: 20,
+
+      // Di sini kita akan mendefinisikan action yang bisa dilakukan
+
+      // Untuk tambah angka, kita akan menggunakan penambahan yang statis,
+      // yaitu +10
+      tambahAngkaPertama: () =>
+        set((state) => ({
+          // Seperti layaknya useState yang menggunakan state berupa object,
+          // Pada saat set state, kita harus menyertakan object yang lengkap
+          // dengan menggunakan spread operator
+          ...state,
+          angkaPertama: state.angkaPertama + 10,
+        })),
+
+      tambahAngkaKedua: () =>
+        set((state) => ({
+          // Tapi sebenarnya, langkah yang dilakukan di atas
+          // (pada tambahAngkaPertama), itu sia sia...
+
+          // Kenapa demikian?
+          // Karena pada zustand, spread operator itu sudah dilakukan
+          // secara OTOMATIS !
+          angkaKedua: state.angkaKedua + 10,
+        })),
+
+      // Untuk yang mengurangi angka, kita akan membuatnya
+      // bisa menerima angka dinamis
+
+      // Untuk bisa menerima angka / value yang dinamis,
+      // kita cukup menambahkan parameter pada action yang akan kita buat
+      kurangAngkaPertama: (angkaDinamis) =>
+        set((state) => ({ angkaPertama: state.angkaPertama - angkaDinamis })),
+
+      kurangAngkaKedua: (angkaDinamis) =>
+        set((state) => ({ angkaKedua: state.angkaKedua - angkaDinamis })),
+
+      // Bagaimana bila kita ingin set beberapa value sekaligus?
+      // Kita bisa menggunakan cara layaknya set secara "naif"
+      // Set value nya satu per satu,
+      // lalu untuk sisanya, akan di-spread secara OTOMATIS !
+      resetAngka: () => set({ angkaPertama: 0, angkaKedua: 0 }),
+    }));
+
+    // Karena ini nantinya akan digunakan pada Component, jangan lupa diexport !
+    export { useCounterStore };
+    ```
+
+1. Selanjutnya kita akan menggunakan `store` yang sudah kita buat pada langkah sebelumnya langsung ke Component yang bernama `FormCounter.jsx` (`/src/components/FormCounter.jsx`).
+    :::warn
+    - Perhatikan kode yang panjang di bawah ini dengan seksama yah !
+    - Lihat baik-baik perubahan sebelum (yang masih menggunakan state) menjadi sesudah (yang menggunakan zustand) !
+    :::
+
+    Adapun kodenya adalah sebagai berikut:
+    ```jsx
+    // File: src/components/FormCounter.jsx
+    import { useState } from "react";
+    // Import useCounterStore terlebih dahulu
+    // INGAT: ini adalah sebuah hooks yang siap digunakan.
+    import { useCounterStore } from "../stores";
+
+    const FormCounter = () => {
+      // Extract state dan action dari useCounterStore
+
+      // Supaya lebih mudah, kita pisah antara state dan action
+      // --- Kumpulan state
+      const { angkaPertama, angkaKedua } = useCounterStore();
+
+      // --- Kumpulan action
+      const {
+        tambahAngkaPertama,
+        tambahAngkaKedua,
+        kurangAngkaPertama,
+        kurangAngkaKedua,
+        resetAngka,
+      } = useCounterStore();
+
+      // Nantinya state ini tidak akan digunakan lagi,
+      // sehingga kita bisa meng-commentnya saja
+      // const [counter, setCounter] = useState({
+      // 	firstNumber: 0,
+      // 	secondNumber: 0,
+      // });
+
+      const counterFirstNumberIncrement = () => {
+        // --- Setter state yang sebelumnya akan kita comment
+        // Karena kita menggunakan object, pada saat set state,
+        // kita harus menyertakan object yang lengkap dengan menggunakan spread operator
+        // setCounter({
+        // 	...counter,
+        // 	firstNumber: counter.firstNumber + 1,
+        // });
+
+        // Kita ganti dengan action yang sudah kita buat
+        tambahAngkaPertama();
+      };
+
+      const counterSecondNumberIncrement = () => {
+        // --- Setter state yang sebelumnya akan kita comment
+        // Karena kita menggunakan object, pada saat set state,
+        // kita harus menyertakan object yang lengkap dengan menggunakan spread operator
+        // setCounter({
+        // 	...counter,
+        // 	secondNumber: counter.secondNumber + 1,
+        // });
+
+        // Kita ganti dengan action yang sudah kita buat
+        tambahAngkaKedua();
+      };
+
+      const counterFirstNumberDecrement = () => {
+        // --- Setter state yang sebelumnya akan kita comment
+        // Karena kita menggunakan object, pada saat set state,
+        // kita harus menyertakan object yang lengkap dengan menggunakan spread operator
+        // setCounter({
+        // 	...counter,
+        // 	firstNumber: counter.firstNumber - 1,
+        // });
+
+        // Kita ganti dengan action yang sudah kita buat
+        // Ingat bahwa action ini menerima angka yang dinamis,
+        // Sehingga kita harus men-supply angka via argument
+        kurangAngkaPertama(100);
+      };
+
+      const counterSecondNumberDecrement = () => {
+        // --- Setter state yang sebelumnya akan kita comment
+        // Karena kita menggunakan object, pada saat set state,
+        // kita harus menyertakan object yang lengkap dengan menggunakan spread operator
+        // setCounter({
+        // 	...counter,
+        // 	secondNumber: counter.secondNumber - 1,
+        // });
+
+        // Kita ganti dengan action yang sudah kita buat
+        // Ingat bahwa action ini menerima angka yang dinamis,
+        // Sehingga kita harus men-supply angka via argument
+        kurangAngkaKedua(100);
+      };
+
+      const counterReset = () => {
+        // --- Setter state yang sebelumnya akan kita comment
+        // Karena kita menggunakan object, pada saat set state,
+        // kita harus menyertakan object yang lengkap dengan set value nya satu per satu
+        // setCounter({
+        // 	firstNumber: 0,
+        // 	secondNumber: 0,
+        // });
+
+        // Kita ganti dengan action yang sudah kita buat
+        resetAngka();
+      };
+
+      return (
+        <section className="flex flex-col gap-4 rounded bg-gray-100 p-4">
+          <p className="text-2xl font-bold">Counter Page</p>
+
+          <p className="text-xl">
+            Nilai <i>firstNumber</i> sekarang adalah{" "}
+            {/* Kita akan mengganti counter.firstNumber dengan state dari zustand */}
+            <span className="font-semibold">{angkaPertama}</span>
+          </p>
+
+          <p className="text-xl">
+            Nilai <i>secondNumber</i> sekarang adalah{" "}
+            {/* Kita akan mengganti counter.secondNumber dengan state dari zustand */}
+            <span className="font-semibold">{angkaKedua}</span>
+          </p>
+
+          {/* --- SELEBIHNYA DI BAWAH INI KODE TIDAK DIUBAH SEDIKITPUN --- */}
+          <section className="flex flex-row gap-4">
+            <button
+              type="button"
+              className="rounded bg-sky-200 py-2 px-4 hover:bg-sky-400 hover:text-white"
+              onClick={counterFirstNumberIncrement}
+            >
+              + (First)
+            </button>
+            <button
+              type="button"
+              className="rounded bg-sky-200 py-2 px-4 hover:bg-sky-400 hover:text-white"
+              onClick={counterSecondNumberIncrement}
+            >
+              + (Second)
+            </button>
+
+            <button
+              type="button"
+              className="rounded bg-sky-200 py-2 px-4 hover:bg-sky-400 hover:text-white"
+              onClick={counterReset}
+            >
+              RESET
+            </button>
+            <button
+              type="button"
+              className="rounded bg-sky-200 py-2 px-4 hover:bg-sky-400 hover:text-white"
+              onClick={counterFirstNumberDecrement}
+            >
+              - (First)
+            </button>
+            <button
+              type="button"
+              className="rounded bg-sky-200 py-2 px-4 hover:bg-sky-400 hover:text-white"
+              onClick={counterSecondNumberDecrement}
+            >
+              - (Second)
+            </button>
+          </section>
+        </section>
+      );
+    };
+
+    export default FormCounter;
+
+    ```
+
+1. Sampai pada tahap ini, permasalahan sudah berhasil dipecahkan, terlihat tidak banyak kode yang diubah bukan?
+
+    :::info
+    Bahkan bila dilihat dari jumlah baris yang dimodifikasi:
+    - Logic menjadi lebih tersentral di dalam `store` zustand yang kita buat.
+    - Component menjadi lebih bersih dan lebih mudah untuk dipahami (dan lebih pendek, apabila *comment* dihapus).
+    :::
+
+Nah sampai di sini masalah sudah selesai !
+
+Yay 🎉 !
+
+Selamat, sampai di sini kita sudah mempelajari bahwa:
+- Kita bisa menggunakan lebih dari satu `state` di dalam `store` zustand yang kita buat.
+- spread operator pada zustand sudah dilakukan secara otomatis, sehingga kita tidak perlu lagi melakukan spread operator secara manual.
+
+:::danger
+- "spread operator" yang dilakukan secara otomatis oleh `zustand` ini hanya berlaku untuk `state` teratas saja (`flat update`). TIDAK BERLAKU bila menggunakan `nested object` !
+- Apabila menggunakan `nested object`, tetap harus menggunakan `spread operator` secara manual.
+
+  ```js
+  // Di dalam store
+
+  // state
+  deep: {
+    nested: {
+      obj: { 
+        count: 100 
+      }
+    }
+  }
+
+  // action
+  normalInc: () =>
+    set((state) => ({
+      deep: {
+        ...state.deep,
+        nested: {
+          ...state.deep.nested,
+          obj: {
+            ...state.deep.nested.obj,
+            count: state.deep.nested.obj.count + 1
+          }
+        }
+      }
+    })),
+  ```
+- Bila ingin menggunakan `nested object` dengan lebih mudah, bisa menggunakan `immer` (yang akan dibahas pada tutorial selanjutnya).
+:::

@@ -1,0 +1,23 @@
+---
+type: lesson
+title: The Solution - Improved
+template: case-1
+focus: /src/stores/index.js
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
+---
+
+# Solution 1 Improved - Immer
+
+:::info
+Pada solusi yang ini kita akan mengubah store kita dengan menggunakan `immer` dan **TIDAK MENGUBAH OUTPUT** apapun yang ada pada component `FormCounter`.
+:::
+
+Nah jadi sekarang bagaimana cara kita mengembangkan kode yang sebelumnya sudah berjalan ini sehingga ke depannya, apabila menemui `nested object` di dalam `state` kita, kita tidak perlu lagi melakukan `spread operator` yang cukup panjang?
+
+Solusinya adalah dengan menggunakan suatu package tambahan yang bernama `immer`.
+
+`immer` adalah sebuah package yang memungkinkan kita untuk melakukan perubahan pada `nested object` di dalam `state` kita tanpa harus melakukan `spread operator` yang cukup panjang. 
+
+Bahkan lebih dari itu, `immer` juga memungkinkan kita untuk melakukan perubahan pada `state` kita secara langsung, tanpa harus melakukan `return` dari `state` yang baru, sehingga "seakan-akan" kita bisa langsung `assign` nilai baru pada `state` kita.

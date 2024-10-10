@@ -1,4 +1,29 @@
 ---
 type: lesson
 title: The Case
+template: case-1
+focus: /src/components/FormCounter.jsx
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
 ---
+
+# Case 1 - Multiple State
+
+Pada tutorial sebelumnya, kita hanya menggunakan sebuah `state` saja di dalam `store` zustand yang kita buat. 
+
+Pada kasus yang akan dihadapi ini, kita akan mencoba untuk menggunakan lebih dari satu `state` di dalam `store` zustand yang kita buat.
+
+Dalam kasus ini kita akan:
+- Membuat `store` zustand yang memiliki lebih dari satu `state`, yaitu `angkaPertama` dan `angkaKedua`.
+- Membuat `actions` untuk mengubah `state` yang kita buat, yaitu `tambahAngkaPertama`, `tambahAngkaKedua`, `kurangAngkaPertama`,  `kurangAngkaKedua`, dan `resetAngka`.
+
+Di sini kita akan melihat:
+- Bagaimana cara untuk mengkonversikan kode yang sebelumnya menggunakan `useState` pada react menjadi `state` pada zustand.
+- Apakah ada yang berbeda ketika kita menggunakan lebih dari satu `state` di dalam `store` zustand.
+
+:::info
+Langkah selanjutnya kita akan menyelesaikan kasus ini, dan kodingannya cukup panjang, mohon diperhatikan dengan pelan-pelan yah !
+:::
+
+Jadi yuk, tanpa *bak bik buk*, kita coba untuk menyelesaikan kasus ini.
