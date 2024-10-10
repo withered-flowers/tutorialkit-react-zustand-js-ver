@@ -1,7 +1,7 @@
 ---
 type: lesson
 title: The Solution - Improved
-template: case-1
+template: case-1-improved
 focus: /src/stores/index.js
 mainCommand: ["npm run dev", "Running dev server"]
 prepareCommands:
@@ -11,7 +11,9 @@ prepareCommands:
 # Solution 1 Improved - Immer
 
 :::info
-Pada solusi yang ini kita akan mengubah store kita dengan menggunakan `immer` dan **TIDAK MENGUBAH OUTPUT** apapun yang ada pada component `FormCounter`.
+Pada tahap ini kita akan: 
+- Mengubah `store` kita dengan menggunakan `immer` dan 
+- **TIDAK MENGUBAH OUTPUT** apapun yang ada pada component `FormCounter`.
 :::
 
 Nah jadi sekarang bagaimana cara kita mengembangkan kode yang sebelumnya sudah berjalan ini sehingga ke depannya, apabila menemui `nested object` di dalam `state` kita, kita tidak perlu lagi melakukan `spread operator` yang cukup panjang?
@@ -21,3 +23,123 @@ Solusinya adalah dengan menggunakan suatu package tambahan yang bernama `immer`.
 `immer` adalah sebuah package yang memungkinkan kita untuk melakukan perubahan pada `nested object` di dalam `state` kita tanpa harus melakukan `spread operator` yang cukup panjang. 
 
 Bahkan lebih dari itu, `immer` juga memungkinkan kita untuk melakukan perubahan pada `state` kita secara langsung, tanpa harus melakukan `return` dari `state` yang baru, sehingga "seakan-akan" kita bisa langsung `assign` nilai baru pada `state` kita.
+
+Untuk itu langkah-langkahnya adalah sebagai berikut:
+1. Install package `immer` dengan perintah `npm install immer`
+1. Modifikasi kode `store` yang ada pada `src/stores/index.js` dengan menggunakan `immer`.
+
+    ```js
+    // Sekarang kita akan meng-import produce dari immer untuk digunakan
+    import { produce } from "immer";
+    import { create } from "zustand";
+
+    const useCounterStore = create((set) => ({
+      // Untuk state tidak ada yang berubah sama sekali
+      angkaPertama: 20,
+      angkaKedua: 20,
+
+      // Untuk actions, kita akan menggunakan produce
+      // Untuk kode lama sebelum immer, kita akan comment
+      // tambahAngkaPertama: () =>
+
+      // 		set((state) => ({
+      // 			...state,
+      // 			angkaPertama: state.angkaPertama + 10,
+      // 		})),
+
+      // Dan kita akan menggantinya dengan versi immer
+      tambahAngkaPertama: () =>
+        // Untuk setiap function yang akan memanggil set,
+        // Kita akan bungkus dengan menggunakan produce
+
+        // set(produce((state) => { ... }));
+        set(
+          // Di sini kita akan memanggil produce yang merupakan function
+          produce(
+            // Di dalam produce, kita akan memanggil sebuah function
+            // yang akan menerima sebuah parameter yaitu state
+            (state) => {
+              // Perbedaannya adalah, kita tidak perlu lagi mengembalikan object
+              // (Perhatikan di sini tidak menggunakan return)
+
+              // Dan satu lagi: di dalam sini kita bisa langsung mengubah state
+
+              // Kita bisa meng-assign state seperti layaknya sebuah variable
+              state.angkaPertama += 10;
+            },
+          ),
+        ),
+
+      // Untuk kode lama sebelum immer, kita akan comment
+      // tambahAngkaKedua: () =>
+      // 		set((state) => ({
+      // 			angkaKedua: state.angkaKedua + 10,
+      // 		})),
+
+      // Dan kita akan menggantinya dengan versi immer
+      tambahAngkaKedua: () =>
+        set(
+          produce((state) => {
+            state.angkaKedua += 10;
+          }),
+        ),
+
+      // Untuk kode lama sebelum immer, kita akan comment
+      // kurangAngkaPertama: (angkaDinamis) =>
+      // 		set((state) => ({ angkaPertama: state.angkaPertama - angkaDinamis })),
+
+      // Dan kita akan menggantinya dengan versi immer
+
+      // Bagaimana penanganannya bila kita memiliki parameter?
+      // Jawabannya: sama saja, kita bisa langsung menggunakannya
+      kurangAngkaPertama: (angkaDinamis) =>
+        set(
+          produce((state) => {
+            state.angkaPertama -= angkaDinamis;
+          }),
+        ),
+
+      // Untuk kode lama sebelum immer, kita akan comment
+      // kurangAngkaKedua: (angkaDinamis) =>
+      // 	set((state) => ({ angkaKedua: state.angkaKedua - angkaDinamis })),
+
+      // Dan kita akan menggantinya dengan versi immer
+      kurangAngkaKedua: (angkaDinamis) =>
+        set(
+          produce((state) => {
+            state.angkaKedua -= angkaDinamis;
+          }),
+        ),
+
+      // Untuk kode lama sebelum immer, kita akan comment
+      // resetAngka: () => set({ angkaPertama: 0, angkaKedua: 0 }),
+
+      // Dan kita akan menggantinya dengan versi immer
+      resetAngka: () =>
+        set(
+          produce((state) => {
+            // Bagaimana jika kita ingin mengubah lebih dari satu state?
+            // Jawabannya: hajar saja selayaknya assignment variabel biasanya
+            state.angkaPertama = 0;
+            state.angkaKedua = 0;
+          }),
+        ),
+    }));
+
+    // Karena ini nantinya akan digunakan pada Component, jangan lupa diexport !
+    export { useCounterStore };
+    ```
+
+1. Lihat kembali pada aplikasinya, apakah bisa langsung berjalan?
+
+Nah sampai di sini artinya kita sudah berhasil menggunakan `zustand` yang dikombinasikan dengan `immer` yang bisa mempermudah kita dalam melakukan perubahan pada `nested object` di dalam `state` kita 
+
+(walaupun pada contoh di atas, hal ini tidak terlihat karena contoh di atas tidak menggunakan `nested object`)
+
+:::danger
+Walaupun terkesan lebih mudah, tapi kita harus berhati-hati ketika mengkombinasikan `immer` dengan `zustand`.
+
+Karena tetap ada `gotcha` yang harus diperhatikan.
+
+Untuk bacaan lebih lanjut bisa dibaca pada dokumentasi di [sini](https://github.com/pmndrs/zustand/blob/main/docs/integrations/immer-middleware.md#gotchas) (Dalam bahasa inggris)
+:::
