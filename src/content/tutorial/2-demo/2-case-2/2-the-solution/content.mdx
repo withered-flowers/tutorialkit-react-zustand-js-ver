@@ -1,0 +1,180 @@
+---
+type: lesson
+title: The Solution
+template: case-2
+focus: /src/stores/index.js
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
+---
+
+# Solution 2 - Async Actions
+
+Mari kita coba selesaikan kasus yang sudah dijabarkan.
+
+Langkah-langkahnya adalah sebagai berikut:
+
+1. Modifikasi file `src/stores/index.js` menjadi kode yang ada di bawah ini:
+    ```js
+    // File: /src/stores/index.js
+
+    // Di sini kita akan menggunakan immer dan zustand pastinya
+    import { produce } from "immer";
+    import { create } from "zustand";
+
+    // Jangan lupa kita akan meng-import service yang sudah dibuat
+    // fetchTodos yang disiapkan untuk mengambil data dari JSONPlaceholder
+    // dan mengembalikan data todos berupa array of object
+    import { fetchTodos } from "../services/jsonplaceholder";
+
+    const useTodoStore = create((set) => ({
+      // State
+      isLoading: false,
+      todos: undefined,
+
+      // Actions
+
+      // Jadi pertanyaannya bagaimana kita bisa menggunakan fetchTodos di sini?
+      // Padahal kan fetchTodos akan mengambil data dalam jangka waktu yang lama
+      // sehingga kita membutuhkan async / await atau promise di sini
+      // Gimana tuh jadinya?
+
+      // Solusinya adalah.... async-kan saja fungsinya !
+      // Jadi action yang dideklarasikan di dalam zustand ini bisa di-async-kan
+      // (berbeda dengan useEffect yang tidak boleh async / await)
+      effectTodos: async () => {
+        // Jadi kita tinggal menuliskan logicnya yang ada di dalam useEffect
+        // di dalam sini
+        set(
+          // Karena di sini kita menggunakan immer, jangan lupa produce
+          produce((state) => {
+            // Dan di sini awalnya kita akan set loadingnya menjadi true
+            state.isLoading = true;
+          }),
+        );
+
+        // Simulasi loading
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Fetching data (ambil logic dari services)
+        const data = await fetchTodos();
+
+        set(
+          // Karena di sini kita menggunakan immer, jangan lupa produce
+          produce((state) => {
+            // Di sini kita akan set loadingnya menjadi false
+            // dan todosnya kita isi dengan data yang sudah di-fetch (data)
+            state.isLoading = false;
+            state.todos = data;
+          }),
+        );
+      },
+    }));
+
+    export { useTodoStore };
+    ```
+
+    :::tip
+    Action dalam `zustand` ternyata bisa dideklarasikan secara *async* !
+    :::
+
+1. Selanjutnya kita akan memodifikasi Component `TableTodos.jsx` menjadi kode yang ada di bawah ini:
+    
+    ```jsx
+    // File: /src/components/TableTodos.jsx
+    // Kita di sini akan comment seluruh useState, dan service
+    // import { useEffect, useState } from "react";
+    // import { fetchTodos } from "../services/jsonplaceholder";
+
+    // Namun kita juga masih menggunakan useEffect
+    import { useEffect } from "react";
+    // Sebagai gantinya kita akan import useTodoStore dari stores
+    import { useTodoStore } from "../stores";
+
+    const TableTodos = () => {
+      // Karena di atas sudah di comment, di sini sudah tidak digunakan lagi
+      // const [isLoading, setIsLoading] = useState(true);
+      // const [todos, setTodos] = useState(undefined);
+
+      // Sebagai gantinya kita akan menggunakan state dan actions dari useTodoStore
+      const { isLoading, todos, effectTodos } = useTodoStore();
+
+      // Karena di sini kita akan menggunakan logic yang lain,
+      // Jadinya di sini kita akan meng-comment code useEffect ini
+      // useEffect(() => {
+      // 	(async () => {
+      // 		setIsLoading(true);
+
+      // 		// Simulasi loading
+      // 		await new Promise((resolve) => setTimeout(resolve, 2000));
+      // 		const data = await fetchTodos();
+
+      // 		setIsLoading(false);
+      // 		setTodos(data);
+      // 	})();
+      // }, []);
+
+      // Nah di sini kita tetap akan menggunakan useEffect,
+      // Namun dengan cara yang berbeda
+      useEffect(() => {
+        // Di sini kita cukup panggil effectTodos-nya saja
+        effectTodos();
+      }, [effectTodos]);
+
+      // ---- Kode di bawah ini tidak ada yang diubah
+
+      return isLoading ? (
+        <p className="animate-pulse text-green-500">Loading...</p>
+      ) : (
+        <table className="bg-gray-200 rounded-lg shadow-md">
+          <thead>
+            <tr>
+              <th colSpan="3" className="p-2 text-center text-lg">
+                Table Todos
+              </th>
+            </tr>
+            <tr>
+              <th className="p-2 text-center">Id</th>
+              <th className="p-2 text-center">Title</th>
+              <th className="p-2 text-center">Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {todos?.slice(0, 10)?.map((todo) => (
+              <tr key={todo.id}>
+                <td className="p-2 text-center">{todo.id}</td>
+                <td className="p-2">{todo.title}</td>
+                <td className="p-2 text-center">{todo.completed ? "Yes" : "No"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    };
+
+    export default TableTodos;
+    ```
+
+    :::info
+    Sebenarnya bila tanpa comment, kode di atas akan menjadi lebih ramping loh yah !
+    :::
+
+1. Setelah itu coba jalankan aplikasinya dan lihat apakah sudah berjalan dengan baik?
+
+Nah sampai di sini artinya kita berhasil meng-implementasikan `zustand` + `immer` pada kasus di mana kita harus menggunakan `async` action.
+
+Cukup mudah bukan?
+
+:::warn
+Sampai di titik ini sebenarnya sudah cukup untuk penggunaan `zustand` dan `immer` pada kasus yang cukup kompleks.
+
+Tapi apabila dirasa:
+- Wah kayaknya kok aneh yah bila tetap membutuhkan `useEffect`
+- Ada cara lain ga sih untuk melakukan query data supaya lebih efisien, langsung ada *cache* nya, dan management yang lebih mudah?
+
+Maka solusinya bisa menggunakan package lainnya lagi yang bernama `react-query` atau `tanstack-query` yang memang sudah terbukti kehandalannya dalam melakukan query data.
+
+Dokumentasinya bisa dilihat di [sini](https://tanstack.com/query/latest/docs/framework/react/overview)
+
+(Untuk ini, mungkin akan dibahas di tutorial selanjutnya yah !)
+:::

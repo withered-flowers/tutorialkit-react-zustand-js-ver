@@ -25,7 +25,20 @@ Solusinya adalah dengan menggunakan suatu package tambahan yang bernama `immer`.
 Bahkan lebih dari itu, `immer` juga memungkinkan kita untuk melakukan perubahan pada `state` kita secara langsung, tanpa harus melakukan `return` dari `state` yang baru, sehingga "seakan-akan" kita bisa langsung `assign` nilai baru pada `state` kita.
 
 Untuk itu langkah-langkahnya adalah sebagai berikut:
-1. Install package `immer` dengan perintah `npm install immer`
+1. Install package `immer` dengan perintah sebagai berikut:
+    ```sh
+    #npm
+    npm install immer
+
+    #pnpm
+    pnpm install immer
+
+    #yarn
+    yarn add immer
+
+    #bun
+    bun add immer
+    ```
 1. Modifikasi kode `store` yang ada pada `src/stores/index.js` dengan menggunakan `immer`.
 
     ```js
@@ -143,3 +156,5 @@ Karena tetap ada `gotcha` yang harus diperhatikan.
 
 Untuk bacaan lebih lanjut bisa dibaca pada dokumentasi di [sini](https://github.com/pmndrs/zustand/blob/main/docs/integrations/immer-middleware.md#gotchas) (Dalam bahasa inggris)
 :::
+
+Sampai di titik ini artinya `Kasus Pertama` ini sudah kita selesaikan, jadi mari kita masuk ke kasus selanjutnya yah.

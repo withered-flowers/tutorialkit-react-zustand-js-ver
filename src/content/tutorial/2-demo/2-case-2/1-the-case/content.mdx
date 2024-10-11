@@ -1,6 +1,36 @@
 ---
 type: lesson
 title: The Case
+template: case-2
+focus: /src/components/TableTodos.jsx
+mainCommand: ["npm run dev", "Running dev server"]
+prepareCommands:
+  - ['npm install', 'Installing dependencies']
 ---
 
 # Case 2 - Async Actions
+
+Mari kita coba lihat pada kasus yang selanjutnya ini:
+- Diberikan sebuah component dengan nama `TableTodos.jsx`
+- Component ini akan melakukan `fetch` data dari API `https://jsonplaceholder.typicode.com/todos`
+- Setelah mendapatkan data, kita akan menampilkannya pada sebuah tabel
+
+Dapat dilihat pada code yang ada di `src/components/TableTodos.jsx`, kita menggunakan:
+- `useState` untuk menyimpan data yang didapatkan dari API
+- `useEffect` untuk melakukan `fetch` data dari API
+
+Nah, bagaimana kita bisa membuat kode ini lebih baik lagi bila menggunakan `zustand` ?
+
+Apakah kita bisa menggunakan `zustand` untuk merapihkan logic dari kodingan yang sudah cukup baik ini?
+
+:::info
+Sebenarnya dalam kasus yang se-sederhana ini, pasti ada yang kepikiran hal berikut?
+
+> *Ngapain sih susah susah?* Kan tinggal menggunakan `hooks` yang dibuat sendiri juga sudah selesai kan masalah ini?
+
+Tentu saja, kita bisa menggunakan `hooks` yang dibuat sendiri untuk menyelesaikan kasus ini.
+
+> Hanya saja, apabila kita berbicara tentang `scaling` dan `testing`, maka sebaiknya untuk logic yang seperti ini, kita menggunakan `zustand` yang sudah terbukti kehandalannya, instead of `hooks` yang dibuat sendiri.
+:::
+
+Jadi mari kita lihat bagaimana cara untuk menyelesaikannya pada langkah selanjutnya.
