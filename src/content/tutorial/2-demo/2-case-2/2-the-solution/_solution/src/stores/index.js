@@ -5,7 +5,7 @@ import { create } from "zustand";
 // Jangan lupa kita akan meng-import service yang sudah dibuat
 // fetchTodos yang disiapkan untuk mengambil data dari JSONPlaceholder
 // dan mengembalikan data todos berupa array of object
-import { fetchTodos } from "../services/jsonplaceholder";
+import { fetchTodosWithAxios } from "../services/jsonplaceholder";
 
 const useTodoStore = create((set) => ({
 	// State
@@ -37,7 +37,7 @@ const useTodoStore = create((set) => ({
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
 		// Fetching data (ambil logic dari services)
-		const data = await fetchTodos();
+		const data = await fetchTodosWithAxios();
 
 		set(
 			// Karena di sini kita menggunakan immer, jangan lupa produce

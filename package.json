@@ -11,16 +11,16 @@
     "start": "astro dev"
   },
   "dependencies": {
-    "@tutorialkit/react": "1.0.0",
+    "@tutorialkit/react": "1.5.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.7.0",
     "@astrojs/react": "^3.6.0",
-    "@tutorialkit/astro": "1.0.0",
-    "@tutorialkit/theme": "1.0.0",
-    "@tutorialkit/types": "1.0.0",
+    "@tutorialkit/astro": "1.5.2",
+    "@tutorialkit/theme": "1.5.2",
+    "@tutorialkit/types": "1.5.2",
     "@types/node": "^20.14.6",
     "@types/react": "^18.3.3",
     "astro": "^4.15.0",

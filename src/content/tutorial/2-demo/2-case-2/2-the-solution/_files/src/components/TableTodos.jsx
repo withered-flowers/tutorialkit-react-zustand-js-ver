@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchTodos } from "../services/jsonplaceholder";
+import { fetchTodosWithAxios } from "../services/jsonplaceholder";
 
 const TableTodos = () => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +11,7 @@ const TableTodos = () => {
 
 			// Simulasi loading
 			await new Promise((resolve) => setTimeout(resolve, 2000));
-			const data = await fetchTodos();
+			const data = await fetchTodosWithAxios();
 
 			setIsLoading(false);
 			setTodos(data);
